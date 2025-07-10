@@ -1,0 +1,12 @@
+name: SubAuth-Backend
+version: 1.0.0
+api-version: 1.21.7
+author: ThatGamerBlue
+main: com.thatgamerblue.subauth.backendplugin.SubAuthBackend
+load: STARTUP
+
+commands:
+  unlink:
+    description: unlinks you from a given service
+  get_token:
+    description: gets your authorization token for a given service
