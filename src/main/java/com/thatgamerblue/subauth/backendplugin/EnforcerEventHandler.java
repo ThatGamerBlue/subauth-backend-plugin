@@ -16,6 +16,8 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 
+import static net.kyori.adventure.text.Component.text;
+
 public class EnforcerEventHandler implements Listener {
 	private final SubAuthBackend plugin;
 
@@ -42,6 +44,12 @@ public class EnforcerEventHandler implements Listener {
 		Player player = event.getPlayer();
 		player.getInventory().clear();
 		event.joinMessage(null);
+
+		Bukkit.getScheduler().runTaskLater(plugin, () -> {
+			if (player.isOnline()) {
+				player.getPlayer().kick(text("Kicked for inactivity."));
+			}
+		}, 5 * 60 * 1000);
 	}
 
 	@EventHandler
