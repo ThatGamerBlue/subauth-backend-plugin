@@ -24,7 +24,7 @@ public class EnforcerEventHandler implements Listener {
 	public EnforcerEventHandler(SubAuthBackend plugin) {
 		this.plugin = plugin;
 
-		Bukkit.getScheduler().runTaskTimer(plugin, this::removeAllEntities, 1000, 1000);
+		Bukkit.getScheduler().runTaskTimer(plugin, this::removeAllEntities, 20, 20);
 	}
 
 	public void removeAllEntities() {
@@ -49,7 +49,7 @@ public class EnforcerEventHandler implements Listener {
 			if (player.isOnline()) {
 				player.getPlayer().kick(text("Kicked for inactivity."));
 			}
-		}, 5 * 60 * 1000);
+		}, 6000); // 5 minutes in ticks
 	}
 
 	@EventHandler
