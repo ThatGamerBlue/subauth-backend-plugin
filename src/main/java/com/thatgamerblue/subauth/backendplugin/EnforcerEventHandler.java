@@ -90,7 +90,6 @@ public class EnforcerEventHandler implements Listener {
 
 		world.setDifficulty(Difficulty.PEACEFUL);
 		world.setTime(6000);
-		world.getWorldBorder().setSize(500, 1);
 	}
 
 	@EventHandler
