@@ -28,7 +28,7 @@ public class WSClient extends WebSocketClient {
 		Mono.just(s)
 			.publishOn(eventHandler.getMainThreadScheduler())
 			.mapNotNull(uuid -> Bukkit.getPlayer(UUID.fromString(uuid)))
-			.flatMap(eventHandler::sendPlayerServiceMessages)
+			.flatMap(p -> eventHandler.sendPlayerServiceMessages(p, p.getUniqueId().toString()))
 			.subscribe();
 	}
 

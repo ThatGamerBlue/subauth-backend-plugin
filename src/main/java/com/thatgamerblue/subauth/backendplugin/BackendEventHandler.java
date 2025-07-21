@@ -85,14 +85,13 @@ public class BackendEventHandler implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		event.getPlayer().sendMessage(SERVER_JOIN_MESSAGE);
 
-		sendPlayerServiceMessages(event.getPlayer()).subscribe();
+		sendPlayerServiceMessages(event.getPlayer(), event.getPlayer().getUniqueId().toString()).subscribe();
 	}
 
-	public Mono<Void> sendPlayerServiceMessages(Player player) {
+	public Mono<Void> sendPlayerServiceMessages(Player player, String uuid) {
 		player.sendMessage(text("Current links:", AQUA));
 
-		return Mono.just(player.getUniqueId().toString())
-			.flatMapMany(uuid -> Flux.fromIterable(services).flatMap(service -> service.getUserData(uuid)))
+		return Flux.fromIterable(services).flatMap(service -> service.getUserData(uuid))
 			.sort(Comparator.comparing(UserData::getServiceName))
 			.map(data -> {
 				Component component;
@@ -118,9 +117,7 @@ public class BackendEventHandler implements Listener {
 			})
 			.publishOn(mainThreadScheduler)
 			.doOnNext(player::sendMessage)
-			.onErrorResume(t -> {
-				return Mono.empty();
-			})
+			.onErrorResume(t -> Mono.empty())
 			.subscribeOn(Schedulers.boundedElastic()).then();
 	}
 }

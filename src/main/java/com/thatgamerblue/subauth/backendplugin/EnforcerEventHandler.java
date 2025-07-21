@@ -62,6 +62,7 @@ public class EnforcerEventHandler implements Listener {
 
 	@EventHandler
 	public void onPlayerChat(AsyncChatEvent event) {
+		plugin.handleChatCommand(event);
 		event.setCancelled(true);
 	}
 
