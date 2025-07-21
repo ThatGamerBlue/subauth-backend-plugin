@@ -94,6 +94,10 @@ public class EnforcerEventHandler implements Listener {
 
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent event) {
+		if (event.getCause() == EntityDamageEvent.DamageCause.KILL || event.getCause() == EntityDamageEvent.DamageCause.WORLD_BORDER) {
+			return;
+		}
+		
 		if (event.getEntity() instanceof Player) {
 			event.setCancelled(true);
 		}
