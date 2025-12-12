@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "com.thatgamerblue.subauth"
-version = "1.0-SNAPSHOT"
+version = "1.1"
 
 repositories {
     mavenCentral()
@@ -31,7 +31,7 @@ dependencies {
 
     implementation("org.java-websocket:Java-WebSocket:1.6.0")
 
-    paperweight.paperDevBundle("1.21.7-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
 }
 
 paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
