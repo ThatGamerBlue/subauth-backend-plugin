@@ -104,8 +104,9 @@ public class BackendEventHandler implements Listener {
 						.append(text(data.getServiceName(), GREEN))
 						.append(text(" is linked with: ", GREEN))
 						.append(text(data.getUsername(), GOLD))
-						.append(text("  Unlink").style(style(RED, ITALIC)).clickEvent(ClickEvent.runCommand("/unlink " + data.getServiceName())))
-						.append(text("  Get Token").style(style(GREEN, ITALIC)).clickEvent(ClickEvent.runCommand("/get_token " + data.getServiceName())));
+						.append(text("  Unlink").style(style(RED, ITALIC)).clickEvent(ClickEvent.suggestCommand("/unlink " + data.getServiceName())))
+						.append(text("  Get Token").style(style(GREEN, ITALIC)).clickEvent(ClickEvent.runCommand("/get_token " + data.getServiceName())))
+						.append(text("  Invalidate Tokens").style(style(DARK_RED, ITALIC))).clickEvent(ClickEvent.suggestCommand("/confirm_invalidate " + data.getServiceName()));
 				} else {
 					component = text("-  ", GOLD)
 						.append(text(data.getServiceName(), GOLD))

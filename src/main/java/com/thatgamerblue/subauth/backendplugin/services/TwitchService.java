@@ -54,6 +54,19 @@ public class TwitchService implements Service {
 	}
 
 	@Override
+	public Mono<Component> invalidateTokens(String uuid) {
+		return HttpHelper.request(eventHandler.getHttpClient(), "/twitch/invalidate_tokens?token=" + eventHandler.getToken() + "&mcUuid=" + uuid)
+			.map(str -> eventHandler.getGson().fromJson(str, WebResponse.class))
+			.map(response -> {
+				if (response.getError() != null) {
+					return text("There was an error invalidating your tokens", DARK_RED);
+				} else {
+					return text("Successfully invalidated your tokens!", GREEN);
+				}
+			});
+	}
+
+	@Override
 	public Mono<String> getSubscribeToken(String uuid) {
 		return HttpHelper.request(eventHandler.getHttpClient(), "/twitch/generate_subscribe_token?token=" + eventHandler.getToken() + "&mcUuid=" + uuid)
 			.map(str -> eventHandler.getGson().fromJson(str, TokenResponse.class))

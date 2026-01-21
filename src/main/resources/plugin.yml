@@ -10,3 +10,5 @@ commands:
     description: unlinks you from a given service
   get_token:
     description: gets your authorization token for a given service
+  confirm_invalidate:
+    description: invalidates your old tokens but keeps you linked to subauth

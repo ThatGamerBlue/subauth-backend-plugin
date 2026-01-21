@@ -1,5 +1,6 @@
 package com.thatgamerblue.subauth.backendplugin;
 
+import com.thatgamerblue.subauth.backendplugin.commands.ConfirmInvalidateCommand;
 import com.thatgamerblue.subauth.backendplugin.commands.GetTokenCommand;
 import com.thatgamerblue.subauth.backendplugin.commands.UnlinkCommand;
 import io.papermc.paper.event.player.AsyncChatEvent;
@@ -21,6 +22,7 @@ public class SubAuthBackend extends JavaPlugin {
 
 		Bukkit.getPluginCommand("unlink").setExecutor(new UnlinkCommand(eventHandler));
 		Bukkit.getPluginCommand("get_token").setExecutor(new GetTokenCommand(eventHandler));
+		Bukkit.getPluginCommand("confirm_invalidate").setExecutor(new ConfirmInvalidateCommand(eventHandler));
 
 		// handles events to stop players causing grief
 		Bukkit.getPluginManager().registerEvents(new EnforcerEventHandler(this), this);

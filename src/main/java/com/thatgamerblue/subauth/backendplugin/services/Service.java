@@ -10,5 +10,7 @@ public interface Service {
 
 	Mono<Component> unlinkUser(String uuid);
 
+	Mono<Component> invalidateTokens(String uuid);
+
 	Mono<String> getSubscribeToken(String uuid);
 }
