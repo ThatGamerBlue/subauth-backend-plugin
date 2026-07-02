@@ -6,13 +6,19 @@ import com.thatgamerblue.subauth.backendplugin.pojo.responses.TokenAndRedirectRe
 import com.thatgamerblue.subauth.backendplugin.pojo.responses.TokenResponse;
 import com.thatgamerblue.subauth.backendplugin.pojo.responses.WebResponse;
 import com.thatgamerblue.subauth.backendplugin.pojo.responses.twitch.UserInfoResponse;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import reactor.core.publisher.Mono;
 
+import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.DARK_RED;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.Style.style;
+import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
 
 @RequiredArgsConstructor
 public class TwitchService implements Service {
@@ -67,8 +73,38 @@ public class TwitchService implements Service {
 	}
 
 	@Override
-	public Mono<String> getSubscribeToken(String uuid) {
-		return HttpHelper.request(eventHandler.getHttpClient(), "/twitch/generate_subscribe_token?token=" + eventHandler.getToken() + "&mcUuid=" + uuid)
+	public Mono<Component> handleGetTokenCommand(BackendEventHandler eventHandler, String uuid, String[] args) {
+		if (args.length == 1) {
+			// no tier - ask for which tier
+			Component component = text("-  Minimum Tier:  ", GREEN);
+			SubscriptionLevel[] tiers = SubscriptionLevel.values();
+			int len = tiers.length;
+			for (int i = 0; i < len; i++) {
+				SubscriptionLevel tier = tiers[i];
+				component = component
+					.append(text(tier.name).style(style(GOLD, ITALIC)).clickEvent(ClickEvent.runCommand("/get_token " + getName() + " " + tier.twitchTier)));
+
+				if (i < len - 1) {
+					component = component.append(text("  "));
+				}
+			}
+			return Mono.just(component);
+		} else {
+			// get the token for the corresponding tier
+			return getSubscribeToken(uuid, args[1])
+				.defaultIfEmpty("error")
+				.map(token -> {
+					if (token.equals("error")) {
+						return text("There was an error getting your token", DARK_RED);
+					}
+					return text("Your Token - Click to Copy").style(style(GOLD, ITALIC))
+						.clickEvent(ClickEvent.copyToClipboard(token));
+				});
+		}
+	}
+
+	private Mono<String> getSubscribeToken(String uuid, String tier) {
+		return HttpHelper.request(eventHandler.getHttpClient(), "/twitch/generate_subscribe_token?token=" + eventHandler.getToken() + "&mcUuid=" + uuid + "&tier=" + HttpHelper.urlEncode(tier))
 			.map(str -> eventHandler.getGson().fromJson(str, TokenResponse.class))
 			.flatMap(response -> {
 				if (response.getError() != null) {
@@ -76,5 +112,16 @@ public class TwitchService implements Service {
 				}
 				return Mono.just(response.getToken());
 			});
+	}
+
+	@Getter
+	@RequiredArgsConstructor
+	private enum SubscriptionLevel {
+		TIER_1("Tier 1", "1000"),
+		TIER_2("Tier 2", "2000"),
+		TIER_3("Tier 3", "3000");
+
+		private final String name;
+		private final String twitchTier;
 	}
 }
